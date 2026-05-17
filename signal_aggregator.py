@@ -4,11 +4,8 @@
 """
 
 import sqlite3
-import hashlib
-import time
 import json
 from typing import Dict, List, Optional
-from datetime import datetime
 
 
 class SignalAggregator:
