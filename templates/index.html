@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arc Predict Agent</title>
+    <style>
+        :root { --p: #667eea; --bg: #f5f7fa; --card: #fff; --text: #2d3748; --muted: #718096; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+        .nav { background: var(--card); box-shadow: 0 2px 4px rgba(0,0,0,.08); padding: 0 24px; height: 56px; display: flex; align-items: center; position: sticky; top:0; z-index:100; }
+        .nav h1 { font-size: 18px; }
+        .nav h1 span { color: var(--p); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 14px; margin-bottom: 24px; }
+        .stat { background: var(--card); border-radius: 12px; padding: 18px; box-shadow: 0 2px 4px rgba(0,0,0,.06); }
+        .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 4px; }
+        .stat-value { font-size: 22px; font-weight: 700; color: var(--p); }
+        .section { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,.06); margin-bottom: 16px; }
+        .section h2 { margin-bottom: 16px; font-size: 16px; }
+        .badge { display:inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .badge-YES { background: #c6f6d5; color: #276749; }
+        .badge-NO { background: #fed7d7; color: #9b2c2c; }
+        .badge-neutral { background: #e2e8f0; color: #4a5568; }
+        .badge-active { background: #ebf8ff; color: #2b6cb0; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 2px solid #e2e8f0; }
+        td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+        .pct { font-weight: 600; }
+        .pct-high { color: #38a169; }
+        .pct-low { color: #e53e3e; }
+        .empty { text-align: center; padding: 30px; color: var(--muted); }
+        code { background: #edf2f7; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="nav"><h1><span>Arc</span> Predict Agent</h1></div>
+    <div class="container">
+        <div class="stats">
+            <div class="stat"><div class="stat-label">Markets</div><div class="stat-value">{{ stats.total_markets }}</div></div>
+            <div class="stat"><div class="stat-label">Signals</div><div class="stat-value">{{ stats.total_signals }}</div></div>
+            <div class="stat"><div class="stat-label">Analyses</div><div class="stat-value">{{ stats.total_analyses }}</div></div>
+            <div class="stat"><div class="stat-label">Kelly Recs</div><div class="stat-value">{{ kelly_stats.total_recommendations }}</div></div>
+            <div class="stat"><div class="stat-label">Builder Fills</div><div class="stat-value">{{ earnings.total_fills }}</div></div>
+            <div class="stat"><div class="stat-label">Earnings</div><div class="stat-value">{{ earnings.total_earnings_usdc }} USDC</div></div>
+        </div>
+
+        <div class="section">
+            <h2>Markets</h2>
+            {% if markets %}
+            <table><thead><tr><th>ID</th><th>Title</th><th>Market Odds</th><th>Our Estimate</th><th>Edge</th></tr></thead>
+            <tbody>
+            {% for m in markets %}
+            <tr>
+                <td>{{ m.market_id[:20] }}</td>
+                <td>{{ m.title[:30] }}</td>
+                <td>{{ "%.1f%%" | format(m.current_odds * 100) }}</td>
+                <td>{{ "%.1f%%" | format((m.our_estimate or 0) * 100) }}</td>
+                <td class="pct {{ 'pct-high' if (m.edge or 0) > 0 else 'pct-low' }}">{{ "%.1f%%" | format((m.edge or 0) * 100) }}</td>
+            </tr>
+            {% endfor %}
+            </tbody></table>
+            {% else %}
+            <div class="empty"><p>No markets yet. Use the SDK:</p>
+            <code style="margin-top:8px;display:block;">agent.analyze_market("will-btc-100k", market_odds=0.25)</code></div>
+            {% endif %}
+        </div>
+
+        {% if recs %}
+        <div class="section">
+            <h2>Latest Builder Recommendations</h2>
+            <table><thead><tr><th>Market</th><th>Direction</th><th>Prob</th><th>Fills</th><th>Earned</th></tr></thead>
+            <tbody>
+            {% for r in recs %}
+            <tr>
+                <td>{{ r.market_id[:20] }}</td>
+                <td><span class="badge badge-{{ r.direction }}">{{ r.direction }}</span></td>
+                <td class="pct">{{ "%.1f%%" | format(r.probability * 100) }}</td>
+                <td>{{ r.fills }}</td>
+                <td>{{ "%.4f" | format(r.earnings_usdc) }} USDC</td>
+            </tr>
+            {% endfor %}
+            </tbody></table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

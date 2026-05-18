@@ -1,0 +1,17 @@
+name: Tests
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python-version }}" }
+      - run: pip install -r requirements.txt && pip install pytest flake8
+      - run: flake8 signal_aggregator.py kelly_sizer.py builder_feed.py predict_sdk.py app.py --max-line-length=120
+      - run: pytest tests/ -v
