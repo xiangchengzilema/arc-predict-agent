@@ -2,6 +2,7 @@
 """Arc Predict Agent CLI - Command-line interface for prediction market analysis."""
 import argparse
 import json
+import os
 import sys
 import urllib.request
 import urllib.error
@@ -9,8 +10,6 @@ import urllib.error
 DEFAULT_BASE = os.environ.get("PREDICT_API_URL", "http://localhost:5002")
 
 # ── helpers ──────────────────────────────────────────────────────────────────
-
-import os
 
 def _api(method, path, body=None):
     """Call the predict-agent REST API."""

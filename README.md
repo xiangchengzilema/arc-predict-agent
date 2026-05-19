@@ -120,13 +120,15 @@ agent.publish_recommendation(
 - [x] Signal aggregator with multi-source support
 - [x] Probability estimation engine
 - [x] Kelly Criterion position sizer
+- [x] Risk manager (drawdown caps, exposure limits)
+- [x] Historical backtesting engine
 - [x] Builder Code monetization layer
 - [x] Python SDK
 - [x] Flask REST API
-- [x] Unit tests
+- [x] Command-line tool (`cli.py`)
+- [x] Unit tests (40 passing)
 - [ ] Live market data integration
 - [ ] Multi-market arbitrage detection
-- [ ] Historical backtesting
 
 ## License
 
