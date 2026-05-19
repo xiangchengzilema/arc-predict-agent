@@ -5,6 +5,22 @@ All notable changes to Arc Predict Agent are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-05-18
+
+### Added
+- **Flask REST API** (`app.py`): public HTTP endpoints for signal submission, probability analysis, Kelly sizing, and Builder Code earnings.
+- **Python SDK** (`predict_sdk.py`): zero-dependency client wrapping the REST API.
+- **Command-line tool** (`cli.py`): `signal`, `analyze`, `kelly`, `publish`, `earnings`, `markets`, `stats` subcommands.
+- **Builder Code monetization** (`builder_feed.py`): per-signal attribution and royalty accrual.
+- **Examples** (`examples/demo.py`): end-to-end usage walkthrough.
+- **Containerization**: `Dockerfile` + `docker-compose.yml` for local + production deploy.
+- **CI**: `.github/workflows/test.yml` runs the full test suite on every push.
+- **Tests**: integration coverage in `tests/test_integration.py`, builder coverage in `tests/test_builder.py`, signal coverage in `tests/test_signal.py`.
+- **MIT License** + `CONTRIBUTING.md`.
+
+### Notes
+- The full set of files above was developed locally between 2026-05-15 and 2026-05-17 but was only pushed to the public repository on 2026-05-18 (commit `97e90e0`). This release tags that point so the changelog matches the repo state.
+
 ## [0.1.0] - 2025-05-15
 
 ### Added
