@@ -196,6 +196,7 @@ class SignalAggregator:
             conn.close()
 
     def get_market(self, market_id: str) -> Optional[Dict]:
+        """Return one market's full record by id, or None if missing."""
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         c.execute("SELECT * FROM markets WHERE market_id = ?", (market_id,))
@@ -209,6 +210,7 @@ class SignalAggregator:
         return dict(zip(cols, row))
 
     def list_markets(self, status: str = None, limit: int = 20) -> List[Dict]:
+        """List markets newest-first, optionally filtered by status."""
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         if status:
@@ -224,6 +226,7 @@ class SignalAggregator:
         return [dict(zip(cols, r)) for r in rows]
 
     def update_market_estimate(self, market_id: str, probability: float, edge: float):
+        """Persist a fresh probability estimate + edge for an existing market."""
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         c.execute('''
@@ -282,6 +285,7 @@ class SignalAggregator:
         }
 
     def get_analysis_history(self, market_id: str, limit: int = 20) -> List[Dict]:
+        """Return prior analysis snapshots for this market, newest-first."""
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         c.execute(
@@ -295,6 +299,7 @@ class SignalAggregator:
         return [dict(zip(cols, r)) for r in rows]
 
     def get_stats(self) -> Dict:
+        """Return aggregate counters: total markets, signals, analyses, and markets with |edge| > 5%."""
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         c.execute("SELECT COUNT(*) FROM markets")
